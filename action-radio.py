@@ -39,18 +39,30 @@ def msg_play(hermes, intentMessage):
     hermes.publish_end_session(current_session_id, result_sentence)
 
 
-def msg_stop (hermes, intentMessage):
+def msg_stop(hermes, intentMessage):
     conf = read_configuration_file(CONFIG_INI)
 
     subprocess.call("mpc stop", shell=True)
-    result_sentence =  "Radio aus "
+    result_sentence =  "Radio aus"
 
     current_session_id = intentMessage.session_id
     hermes.publish_end_session (current_session_id, result_sentence)
+
+
+def msg_next(hermes, intentMessage):
+    conf = read_configuration_file(CONFIG_INI)
+    
+    subprocess.call("mpc next", shell=True)
+    result_sentence = "Naechster Sender"
+    
+    current_session_id = intentMessage.session_id
+    hermes.publish_end_session (current_session_id, result_sentence)
+    
     
 if  __name__  ==  " __main__ " :
     mqtt_opts = MqttOptions ()
     mit Hermes ( mqtt_options = mqtt_opts) als h:
         h.subscribe_intent("cetax:play", msg_play)
         h.subscribe_intent("cetax:play", msg_stop)
+        h.subscribe_intent("cetax:next", msg_next)
         h.start()
